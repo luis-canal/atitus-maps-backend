@@ -2,14 +2,18 @@ package br.edu.atitus.luis_canal.apisample.services;
 
 import br.edu.atitus.luis_canal.apisample.entities.User;
 import br.edu.atitus.luis_canal.apisample.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final UserRepository repository;
 
-    public UserService(UserRepository repository) {
+    private final PasswordEncoder encoder;
+
+    public UserService(UserRepository repository, PasswordEncoder encoder) {
         this.repository = repository;
+        this.encoder = encoder;
     }
 
     public User save(User newUser) throws Exception {
@@ -31,6 +35,8 @@ public class UserService {
         if (newUser.getPassword() == null || newUser.getPassword().length() < 8)
             throw new Exception("Password informado inválido!");
         // TODO fazer validação de qualidade de senha
+        newUser.setPassword(encoder.encode(newUser.getPassword()));
+
 
         if (newUser.getType() == null)
             throw new Exception("Tipo de usuário informado inválido!");
