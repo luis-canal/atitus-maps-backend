@@ -3,6 +3,7 @@ package br.edu.atitus.luis_canal.apisample.repositories;
 import br.edu.atitus.luis_canal.apisample.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Boolean existsByEmail(String email);
     Boolean existsByEmailAndName(String email, String name);
 
+
+    Optional<Object> findByEmail(String username);
 }
