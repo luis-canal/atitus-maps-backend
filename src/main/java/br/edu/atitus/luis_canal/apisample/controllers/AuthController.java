@@ -1,5 +1,6 @@
 package br.edu.atitus.luis_canal.apisample.controllers;
 
+import br.edu.atitus.luis_canal.apisample.components.JwtUtil;
 import br.edu.atitus.luis_canal.apisample.dtos.SigninDTO;
 import br.edu.atitus.luis_canal.apisample.dtos.SignupDTO;
 import br.edu.atitus.luis_canal.apisample.entities.User;
@@ -35,7 +36,12 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<String> postSignin(@RequestBody SigninDTO dto) throws Exception{
         auth.getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
-        return ResponseEntity.ok("Aqui vai o JWT");
+
+        User user = (User) this.userService.loadUserByUsername(dto.email());
+
+        String jwt = JwtUtil.generateToken(user.getEmail(), user.getId(), user.getType());
+
+        return ResponseEntity.ok(jwt);
     }
 
     @ExceptionHandler(Exception.class)
