@@ -41,3 +41,18 @@ public class PointService {
         return repository.save(point);
     }
 
+    @Transactional
+    public void deleteById(UUID id) throws Exception {
+        var pointInBD = repository.findById(id).orElseThrow(() -> new Exception("Ponto não localizado"));
+        User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (pointInBD.getUser().getId().equals(userAuth.getId()))
+            throw new Exception("Você não tem permissão para esta ação.");
+
+        repository.deleteById(id);
+    }
+
+    public List<PointEntity> findAll() {
+        return repository.findAll();
+    }
+}
+
