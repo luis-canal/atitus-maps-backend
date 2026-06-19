@@ -38,8 +38,11 @@ public class UserService implements UserDetailsService {
             throw new Exception("Já existe usuário cadastrado com este e-mail!");
 
         if (newUser.getPassword() == null || newUser.getPassword().length() < 8)
-            throw new Exception("Password informado inválido!");
-        // TODO fazer validação de qualidade de senha
+            throw new Exception("Senha deve ter no mínimo 8 caracteres!");
+        
+        if (!validatePassword(newUser.getPassword()))
+            throw new Exception("Senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número!");
+        
         newUser.setPassword(encoder.encode(newUser.getPassword()));
 
 
@@ -60,5 +63,10 @@ public class UserService implements UserDetailsService {
     private boolean validateEmail(String email) {
         String regex = "^[a-zA-Z0-9._%-]+@(gmail\\.com|bol\\.com\\.br|yahoo\\.com)$";
         return email.matches(regex);
+    }
+
+    private boolean validatePassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
+        return password.matches(regex);
     }
 }
