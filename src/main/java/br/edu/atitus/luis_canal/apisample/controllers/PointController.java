@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/ws/point")
@@ -32,6 +33,12 @@ public class PointController {
         BeanUtils.copyProperties(dto, point);
         service.save(point);
         return ResponseEntity.status(201).body(point);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable UUID id) throws Exception {
+        service.deleteById(id);
+        return ResponseEntity.ok("Ponto deletado");
     }
 
     @ExceptionHandler(Exception.class)
