@@ -30,7 +30,9 @@ public class UserService implements UserDetailsService {
         if (newUser.getEmail() == null || newUser.getEmail().isBlank())
             throw new Exception("E-mail informado inválido!");
         newUser.setEmail(newUser.getEmail().trim().toLowerCase());
-        // TODO fazer validação do formato de e-mail
+        
+        if (!validateEmail(newUser.getEmail()))
+            throw new Exception("E-mail deve estar em um dos domínios permitidos: gmail.com, bol.com.br ou yahoo.com");
 
         if (repository.existsByEmail(newUser.getEmail()))
             throw new Exception("Já existe usuário cadastrado com este e-mail!");
@@ -53,5 +55,10 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return (UserDetails) repository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com esse email"));
+    }
+
+    private boolean validateEmail(String email) {
+        String regex = "^[a-zA-Z0-9._%-]+@(gmail\\.com|bol\\.com\\.br|yahoo\\.com)$";
+        return email.matches(regex);
     }
 }
