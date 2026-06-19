@@ -78,5 +78,10 @@ public class PointService {
     public List<PointEntity> findAll() {
         return repository.findAll();
     }
+
+    public List<PointEntity> findAllByAuthenticatedUser() {
+        User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return repository.findByUser(userAuth);
+    }
 }
 

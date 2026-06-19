@@ -23,7 +23,7 @@ public class PointController {
 
     @GetMapping
     public ResponseEntity<List<PointEntity>> findAll() {
-        var lista = service.findAll();
+        var lista = service.findAllByAuthenticatedUser();
         return ResponseEntity.ok(lista);
     }
 
