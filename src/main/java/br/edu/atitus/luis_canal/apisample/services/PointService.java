@@ -42,10 +42,34 @@ public class PointService {
     }
 
     @Transactional
+    public PointEntity update(UUID id, PointEntity pointData) throws Exception {
+        var pointInBD = repository.findById(id).orElseThrow(() -> new Exception("Ponto não localizado"));
+        User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        if (!pointInBD.getUser().getId().equals(userAuth.getId()))
+            throw new Exception("Você não tem permissão para esta ação.");
+
+        if (pointData.getDescription() == null || pointData.getDescription().isEmpty())
+            throw new Exception("Descrição inválida");
+
+        if (pointData.getLatitude() < -90 || pointData.getLatitude() > 90)
+            throw new Exception("Latitude inválida.");
+
+        if (pointData.getLongitude() < -180 || pointData.getLongitude() > 180)
+            throw new Exception("Longitude inválida.");
+
+        pointInBD.setDescription(pointData.getDescription());
+        pointInBD.setLatitude(pointData.getLatitude());
+        pointInBD.setLongitude(pointData.getLongitude());
+
+        return repository.save(pointInBD);
+    }
+
+    @Transactional
     public void deleteById(UUID id) throws Exception {
         var pointInBD = repository.findById(id).orElseThrow(() -> new Exception("Ponto não localizado"));
         User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (pointInBD.getUser().getId().equals(userAuth.getId()))
+        if (!pointInBD.getUser().getId().equals(userAuth.getId()))
             throw new Exception("Você não tem permissão para esta ação.");
 
         repository.deleteById(id);

@@ -35,6 +35,14 @@ public class PointController {
         return ResponseEntity.status(201).body(point);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PointEntity> update(@PathVariable UUID id, @RequestBody PointDTO dto) throws Exception {
+        PointEntity point = new PointEntity();
+        BeanUtils.copyProperties(dto, point);
+        PointEntity updated = service.update(id, point);
+        return ResponseEntity.ok(updated);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable UUID id) throws Exception {
         service.deleteById(id);
