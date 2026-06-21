@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: maps-api
+    runtime: docker
+    plan: standard
+    region: sao-paulo
+    buildCommand: docker build -t maps-api .
+    startCommand: docker run -p 8080:8080 maps-api
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PORT
+        value: 8080
